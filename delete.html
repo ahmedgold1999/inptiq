@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حذف الحساب</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f172a;
+      --card2:#111c33;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --danger:#ef4444;
+      --danger2:#dc2626;
+      --ring: rgba(239, 68, 68, .25);
+      --ok:#22c55e;
+      --border: rgba(148,163,184,.18);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(239, 68, 68, .14), transparent 60%),
+        radial-gradient(900px 700px at 90% 30%, rgba(59, 130, 246, .12), transparent 55%),
+        linear-gradient(180deg, #070b14, var(--bg));
+      color: var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .wrap{
+      width:min(520px, 100%);
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .head{
+      padding:22px 22px 14px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(239,68,68,.10), transparent);
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0 0 6px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(239,68,68,.35);
+      background: rgba(239,68,68,.12);
+      color: #fecaca;
+      font-weight:700;
+    }
+
+    .sub{
+      margin:0;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    form{
+      padding:18px 22px 22px;
+      display:grid;
+      gap:14px;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      color: #cbd5e1;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .field{
+      background: rgba(15, 23, 42, .65);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      transition: border-color .2s, box-shadow .2s, transform .1s;
+    }
+
+    .field:focus-within{
+      border-color: rgba(239,68,68,.55);
+      box-shadow: 0 0 0 4px var(--ring);
+      transform: translateY(-1px);
+    }
+
+    .icon{
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      color:#ffd1d1;
+      flex: 0 0 auto;
+    }
+
+    input{
+      width:100%;
+      border:0;
+      outline:0;
+      background: transparent;
+      color: var(--text);
+      font-size:14px;
+      padding:6px 4px;
+    }
+
+    input::placeholder{ color: rgba(148,163,184,.75); }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:2px;
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    .toggle{
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      color:#cbd5e1;
+      font-weight:700;
+      transition: transform .1s, border-color .2s;
+    }
+    .toggle:hover{ transform: translateY(-1px); border-color: rgba(148,163,184,.30); }
+
+    .btn{
+      margin-top:6px;
+      width:100%;
+      border:0;
+      border-radius:14px;
+      padding:13px 14px;
+      font-size:15px;
+      font-weight:900;
+      cursor:pointer;
+      background: linear-gradient(135deg, var(--danger), var(--danger2));
+      color:white;
+      box-shadow: 0 12px 26px rgba(239,68,68,.22);
+      transition: transform .08s, filter .2s, opacity .2s;
+    }
+    .btn:hover{ filter: brightness(1.05); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .note{
+      margin:0;
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.7;
+      padding:0 22px 22px;
+    }
+
+    .toast{
+      display:none;
+      margin:0 22px 18px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+      color: #bbf7d0;
+      font-weight:800;
+      font-size:13px;
+      align-items:center;
+      gap:10px;
+    }
+    .toast.show{ display:flex; }
+
+    .toast .dot{
+      width:10px; height:10px;
+      border-radius:50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.14);
+    }
+
+    .error{
+      display:none;
+      margin: -6px 0 2px;
+      color: #fecaca;
+      font-size:12px;
+      font-weight:700;
+    }
+    .error.show{ display:block; }
+
+    .footer{
+      text-align:center;
+      margin-top:14px;
+      color: rgba(148,163,184,.75);
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card" role="region" aria-label="حذف الحساب">
+      <div class="head">
+        <div class="title">
+          حذف حساب المستخدم
+          <span class="badge">شكلية فقط</span>
+        </div>
+        <p class="sub">ادخل اسم المستخدم وكلمة المرور ثم اضغط حذف. لا يتم إرسال أي بيانات لأي سيرفر.</p>
+      </div>
+
+      <div id="toast" class="toast" role="status" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="toastText">تم حذف الحساب بنجاح</span>
+      </div>
+
+      <form id="deleteForm" autocomplete="off">
+        <div>
+          <label for="username">اسم المستخدم</label>
+          <div class="field">
+            <div class="icon" aria-hidden="true">👤</div>
+            <input id="username" name="username" type="text" placeholder="مثال: ahmedgold1999" />
+          </div>
+          <div id="userErr" class="error">رجاءً أدخل اسم المستخدم.</div>
+        </div>
+
+        <div>
+          <label for="password">كلمة المرور</label>
+          <div class="field">
+            <div class="icon" aria-hidden="true">🔒</div>
+            <input id="password" name="password" type="password" placeholder="••••••••" />
+          </div>
+          <div id="passErr" class="error">رجاءً أدخل كلمة المرور.</div>
+
+          <div class="row">
+            <span>تأكد قبل الحذف</span>
+            <button type="button" class="toggle" id="togglePass" aria-pressed="false">
+              👁️ إظهار
+            </button>
+          </div>
+        </div>
+
+        <button class="btn" id="deleteBtn" type="submit">حذف الحساب</button>
+      </form>
+
+      <p class="note">
+        ملاحظة: هذه واجهة تجريبية/شكلية فقط. للحذف الحقيقي تحتاج ربطها بواجهة API في السيرفر وتأكيد المستخدم.
+      </p>
+    </div>
+
+    <div class="footer">© واجهة تجريبية</div>
+  </div>
+
+  <script>
+    const form = document.getElementById('deleteForm');
+    const btn = document.getElementById('deleteBtn');
+    const toast = document.getElementById('toast');
+
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+
+    const userErr = document.getElementById('userErr');
+    const passErr = document.getElementById('passErr');
+
+    const togglePass = document.getElementById('togglePass');
+
+    function showToast(msg) {
+      document.getElementById('toastText').textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    function setError(el, show) {
+      el.classList.toggle('show', !!show);
+    }
+
+    togglePass.addEventListener('click', () => {
+      const isHidden = password.type === 'password';
+      password.type = isHidden ? 'text' : 'password';
+      togglePass.textContent = isHidden ? '🙈 إخفاء' : '👁️ إظهار';
+      togglePass.setAttribute('aria-pressed', String(isHidden));
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const u = username.value.trim();
+      const p = password.value.trim();
+
+      setError(userErr, !u);
+      setError(passErr, !p);
+
+      if (!u || !p) return;
+
+      // شكلية: محاكاة طلب حذف
+      btn.disabled = true;
+      btn.textContent = 'جارٍ الحذف...';
+
+      setTimeout(() => {
+        // شكلية: نجاح
+        username.value = '';
+        password.value = '';
+        password.type = 'password';
+        togglePass.textContent = '👁️ إظهار';
+        togglePass.setAttribute('aria-pressed', 'false');
+
+        showToast('تم حذف الحساب بنجاح');
+
+        btn.disabled = false;
+        btn.textContent = 'حذف الحساب';
+      }, 900);
+    });
+  </script>
+</body>
+</html>
